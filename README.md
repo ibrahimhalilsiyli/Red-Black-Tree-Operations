@@ -72,18 +72,21 @@ This project implements a complete Red-Black Tree data structure with interactiv
 ## 📸 Screenshots of the Application
 
 ### Main Interface
-![Main Interface](screenshots/main_interface.png)
+![image](https://github.com/user-attachments/assets/b9db0b7f-d17b-4ebf-a117-09a5511d7caf)
+
 *The main interface showing the Red-Black Tree visualization with controls for insertion and deletion.*
 
 ### Tree Visualization
-![Tree Visualization](screenshots/tree_visualization.png)
+![image](https://github.com/user-attachments/assets/30b581af-b184-4275-92bf-aadddf6cf4f2)
+
+
 *A clear visual representation of the Red-Black Tree with red and black nodes.*
 
 ### Operation History
-![Operation History](screenshots/operation_history.png)
+![image](https://github.com/user-attachments/assets/f7af41d3-b7cd-44d0-8bc9-c012b505554a)
+
 *Step-by-step history of tree operations showing the balancing process.*
 
-*Note: Screenshots will be added after the application is deployed and running.*
 
 ## ⚡ Complexity Analysis
 
