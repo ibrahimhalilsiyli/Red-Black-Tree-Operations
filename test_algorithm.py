@@ -1,7 +1,7 @@
-import pytest
 from algorithm import RedBlackTree
 
 def test_insert():
+    print("Testing insertion...")
     rbt = RedBlackTree()
     rbt.insert(10)
     assert rbt.root.key == 10
@@ -30,8 +30,10 @@ def test_insert():
     assert rbt.root.right.left is not None
     assert rbt.root.right.left.key == 15
     assert rbt.root.right.left.color == "RED"
+    print("✅ Insertion test passed!")
 
 def test_delete():
+    print("Testing deletion...")
     rbt = RedBlackTree()
     nodes = [55, 40, 65, 60, 75, 57]
     for node in nodes:
@@ -57,8 +59,10 @@ def test_delete():
     # Delete a leaf node (57)
     rbt.delete_node(57)
     assert rbt.root.right.left == rbt.TNULL
+    print("✅ Deletion test passed!")
 
 def test_red_black_properties():
+    print("Testing Red-Black properties...")
     rbt = RedBlackTree()
     nodes = [10, 20, 5, 15, 25, 30, 1, 7]
     for node in nodes:
@@ -96,4 +100,74 @@ def test_red_black_properties():
     
     # This is harder to test directly without a dedicated function
     # but the logic is implicitly tested through the other tests.
-    pass 
+    print("✅ Red-Black properties test passed!")
+
+def test_search():
+    print("Testing search...")
+    rbt = RedBlackTree()
+    nodes = [10, 20, 5, 15, 25, 30, 1, 7]
+    for node in nodes:
+        rbt.insert(node)
+    
+    # Test existing nodes
+    for node in nodes:
+        result = rbt.search(node)
+        assert result != rbt.TNULL
+        assert result.key == node
+    
+    # Test non-existing nodes
+    non_existing = [0, 100, 99, -1]
+    for node in non_existing:
+        result = rbt.search(node)
+        assert result == rbt.TNULL
+    
+    print("✅ Search test passed!")
+
+def test_edge_cases():
+    print("Testing edge cases...")
+    rbt = RedBlackTree()
+    
+    # Test empty tree
+    assert rbt.root == rbt.TNULL
+    
+    # Test single node
+    rbt.insert(10)
+    assert rbt.root.key == 10
+    assert rbt.root.color == "BLACK"
+    
+    # Test duplicate insertion (should be handled gracefully)
+    rbt.insert(10)  # Duplicate
+    assert rbt.root.key == 10
+    
+    # Test negative numbers
+    rbt.insert(-5)
+    assert rbt.search(-5) != rbt.TNULL
+    
+    # Test large numbers
+    rbt.insert(1000)
+    assert rbt.search(1000) != rbt.TNULL
+    
+    print("✅ Edge cases test passed!")
+
+def run_all_tests():
+    print("🧪 Running Red-Black Tree Tests...")
+    print("=" * 50)
+    
+    try:
+        test_insert()
+        test_delete()
+        test_red_black_properties()
+        test_search()
+        test_edge_cases()
+        
+        print("=" * 50)
+        print("🎉 All tests passed successfully!")
+        print("✅ Red-Black Tree implementation is working correctly.")
+        
+    except Exception as e:
+        print(f"❌ Test failed: {e}")
+        import traceback
+        traceback.print_exc()
+
+if __name__ == "__main__":
+    run_all_tests() 

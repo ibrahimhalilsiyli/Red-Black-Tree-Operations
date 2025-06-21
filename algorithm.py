@@ -1,5 +1,6 @@
 import sys
 import copy
+import time
 
 class Node:
     def __init__(self, key, color="RED", parent=None, left=None, right=None):
@@ -32,8 +33,33 @@ class RedBlackTree:
     def __init__(self):
         self.TNULL = Node(0, "BLACK")
         self.root = self.TNULL
+        self.operation_history = []  # Track operations for visualization
+
+    def add_operation_step(self, description, operation_type="operation"):
+        """Add a step to the operation history for visualization"""
+        # Limit operation history to prevent memory issues
+        if len(self.operation_history) > 20:
+            self.operation_history = self.operation_history[-15:]  # Keep last 15 steps
+        
+        # Only create deep copy for important operations to improve performance
+        if operation_type in ['start', 'rotation', 'recolor'] or len(self.operation_history) < 5:
+            tree_copy = copy.deepcopy(self)
+        else:
+            # For less important operations, create a shallow copy to save time
+            tree_copy = copy.copy(self)
+        
+        self.operation_history.append({
+            'description': description,
+            'tree_state': tree_copy,
+            'operation_type': operation_type,
+            'timestamp': time.time()
+        })
 
     def insert(self, key):
+        # Only add initial step for complex operations
+        if self.root != self.TNULL:
+            self.add_operation_step(f"Starting insertion of {key}", "start")
+        
         node = Node(key, "RED", left=self.TNULL, right=self.TNULL)
         
         y = None
@@ -54,8 +80,14 @@ class RedBlackTree:
         else:
             y.right = node
 
+        # Only add step after basic insertion for complex trees
+        if self.root != node:
+            self.add_operation_step(f"Inserted {key} as red node", "insert")
+
         if node.parent is None:
             node.color = "BLACK"
+            if self.root != node:  # Only track if it's not the first node
+                self.add_operation_step(f"Root node {key} colored black", "recolor")
             return
 
         if node.parent.parent is None:
@@ -68,14 +100,24 @@ class RedBlackTree:
             if k.parent == k.parent.parent.right:
                 u = k.parent.parent.left
                 if u.color == "RED":
+                    # Case 1: Uncle is red - recoloring
+                    # Only track significant recoloring operations
+                    if len(self.operation_history) < 10:  # Limit tracking for performance
+                        self.add_operation_step(f"Case 1: Uncle is red - recoloring nodes", "recolor")
                     u.color = "BLACK"
                     k.parent.color = "BLACK"
                     k.parent.parent.color = "RED"
                     k = k.parent.parent
                 else:
                     if k == k.parent.left:
+                        # Case 2: Uncle is black, node is left child - right rotation
+                        if len(self.operation_history) < 10:
+                            self.add_operation_step(f"Case 2: Right rotation on parent", "rotation")
                         k = k.parent
                         self.right_rotate(k)
+                    # Case 3: Uncle is black, node is right child - left rotation
+                    if len(self.operation_history) < 10:
+                        self.add_operation_step(f"Case 3: Left rotation on grandparent", "rotation")
                     k.parent.color = "BLACK"
                     k.parent.parent.color = "RED"
                     self.left_rotate(k.parent.parent)
@@ -83,20 +125,32 @@ class RedBlackTree:
                 u = k.parent.parent.right
 
                 if u.color == "RED":
+                    # Case 1: Uncle is red - recoloring
+                    if len(self.operation_history) < 10:
+                        self.add_operation_step(f"Case 1: Uncle is red - recoloring nodes", "recolor")
                     u.color = "BLACK"
                     k.parent.color = "BLACK"
                     k.parent.parent.color = "RED"
                     k = k.parent.parent
                 else:
                     if k == k.parent.right:
+                        # Case 2: Uncle is black, node is right child - left rotation
+                        if len(self.operation_history) < 10:
+                            self.add_operation_step(f"Case 2: Left rotation on parent", "rotation")
                         k = k.parent
                         self.left_rotate(k)
+                    # Case 3: Uncle is black, node is left child - right rotation
+                    if len(self.operation_history) < 10:
+                        self.add_operation_step(f"Case 3: Right rotation on grandparent", "rotation")
                     k.parent.color = "BLACK"
                     k.parent.parent.color = "RED"
                     self.right_rotate(k.parent.parent)
             if k == self.root:
                 break
         self.root.color = "BLACK"
+        # Only track final step if we have few operations
+        if len(self.operation_history) < 10:
+            self.add_operation_step("Final step: Root colored black", "recolor")
 
     def delete_node(self, key):
         z = self.TNULL
@@ -234,4 +288,18 @@ class RedBlackTree:
     def minimum(self, node):
         while node.left != self.TNULL:
             node = node.left
-        return node 
+        return node
+    
+    def search(self, key):
+        """Search for a key in the tree"""
+        return self._search_recursive(self.root, key)
+    
+    def _search_recursive(self, node, key):
+        """Recursive search helper"""
+        if node == self.TNULL or key == node.key:
+            return node
+        
+        if key < node.key:
+            return self._search_recursive(node.left, key)
+        else:
+            return self._search_recursive(node.right, key) 
