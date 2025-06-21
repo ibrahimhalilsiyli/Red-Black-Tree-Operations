@@ -316,8 +316,8 @@ def main():
     
     history = get_operation_history()
     if history:
-        # Show only the last 5 steps to improve performance
-        recent_history = history[-5:] if len(history) > 5 else history
+        # Show the last 10 steps to see more visualizations
+        recent_history = history[-10:] if len(history) > 10 else history
         
         for i, step in enumerate(recent_history):
             step_number = len(history) - len(recent_history) + i + 1
@@ -334,7 +334,7 @@ def main():
             else:
                 expander_color = "⚪"
             
-            with st.expander(f"{expander_color} Step {step_number}: {step['description']}", expanded=(i == len(recent_history)-1)):
+            with st.expander(f"{expander_color} Step {step_number}: {step['description']}", expanded=True):
                 st.write(f"**Description:** {step['description']}")
                 st.write(f"**Operation Type:** {step['step_type']}")
                 
@@ -348,18 +348,23 @@ def main():
                 elif step['step_type'] == "recolor":
                     st.markdown("**Recoloring Operation:** Changes node colors to fix violations")
                 
-                # Only show tree visualization for the last step to improve performance
-                if i == len(recent_history) - 1:
-                    if step['tree_state'].root != step['tree_state'].TNULL:
-                        dot = plot_tree(step['tree_state'])
-                        if dot:
+                # Show tree visualization for each step - make it more prominent
+                st.subheader("🌳 Tree State at This Step")
+                if step['tree_state'].root != step['tree_state'].TNULL:
+                    dot = plot_tree(step['tree_state'])
+                    if dot:
+                        # Make the step visualizations smaller and more compact
+                        col1, col2, col3 = st.columns([1, 2, 1])
+                        with col2:
                             st.graphviz_chart(dot, use_container_width=False)
                     else:
                         st.write("Empty tree")
+                else:
+                    st.write("Empty tree")
         
         # Show total steps info
-        if len(history) > 5:
-            st.info(f"Showing last 5 of {len(history)} total steps. Use 'Clear History' to reset.")
+        if len(history) > 10:
+            st.info(f"Showing last 10 of {len(history)} total steps. Use 'Clear History' to reset.")
     else:
         st.info("No operations performed yet. Try 'Insert with Steps' to see detailed Red-Black Tree operations!")
 

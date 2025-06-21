@@ -18,26 +18,26 @@ def plot_tree(tree):
         
         # Optimize for performance - use smaller sizes for large trees
         if node_count <= 10:
-            # Small tree - large nodes
-            node_size = '0.8'
-            font_size = '14'
-            graph_size = '8,7'
-            node_sep = '0.4'
-            rank_sep = '0.4'
+            # Small tree - medium nodes
+            node_size = '0.5'
+            font_size = '10'
+            graph_size = '6,5'
+            node_sep = '0.3'
+            rank_sep = '0.3'
         elif node_count <= 25:
-            # Medium tree - medium nodes
-            node_size = '0.6'
-            font_size = '11'
-            graph_size = '9,8'
-            node_sep = '0.25'
-            rank_sep = '0.25'
-        else:
-            # Large tree - small nodes for performance
+            # Medium tree - small nodes
             node_size = '0.4'
-            font_size = '9'
-            graph_size = '12,10'
-            node_sep = '0.15'
-            rank_sep = '0.15'
+            font_size = '8'
+            graph_size = '7,6'
+            node_sep = '0.2'
+            rank_sep = '0.2'
+        else:
+            # Large tree - very small nodes for performance
+            node_size = '0.3'
+            font_size = '7'
+            graph_size = '10,8'
+            node_sep = '0.1'
+            rank_sep = '0.1'
         
         # Set minimal node attributes for better performance
         dot.attr('node', 
