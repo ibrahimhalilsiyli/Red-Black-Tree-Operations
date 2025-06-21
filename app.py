@@ -1,6 +1,6 @@
 import streamlit as st
 from algorithm import RedBlackTree
-from utils import plot_tree, get_tree_statistics
+from utils import plot_tree, get_tree_statistics, count_nodes, get_tree_height
 import copy
 import time
 import random
@@ -33,18 +33,6 @@ def add_operation_step(description, tree_state, step_type="operation"):
         'step_type': step_type,
         'timestamp': time.time()
     })
-
-def get_tree_height(tree):
-    """Calculate the height of the tree"""
-    if tree.root == tree.TNULL:
-        return 0
-    
-    def height_recursive(node):
-        if node == tree.TNULL:
-            return 0
-        return 1 + max(height_recursive(node.left), height_recursive(node.right))
-    
-    return height_recursive(tree.root)
 
 def main():
     st.set_page_config(page_title="Red-Black Tree Visualizer", layout="wide")
@@ -188,12 +176,15 @@ def main():
         
         if tree.root != tree.TNULL:
             # Compact visualization controls
-            col_viz1, col_viz2 = st.columns(2)
+            col_viz1, col_viz2, col_viz3 = st.columns(3)
             
             with col_viz1:
                 show_stats = st.checkbox("Show Stats", value=True)
             with col_viz2:
                 compact_mode = st.checkbox("Compact Mode", value=True)
+            with col_viz3:
+                if st.button("🔄 Refresh"):
+                    st.rerun()
             
             # Create and display the tree visualization
             dot = plot_tree(tree)
@@ -220,13 +211,8 @@ def main():
             
             # Display compact tree statistics
             if show_stats:
-                # Cache stats to avoid repeated calculations
-                if 'cached_stats' not in st.session_state or st.session_state.get('last_tree_state') != id(tree):
-                    stats = get_tree_statistics(tree)
-                    st.session_state.cached_stats = stats
-                    st.session_state.last_tree_state = id(tree)
-                else:
-                    stats = st.session_state.cached_stats
+                # Always recalculate stats to ensure they're up to date
+                stats = get_tree_statistics(tree)
                 
                 # Compact metrics display
                 col_stats1, col_stats2, col_stats3 = st.columns(3)
