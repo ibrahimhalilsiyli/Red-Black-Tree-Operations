@@ -224,6 +224,15 @@ This project serves as an excellent learning tool for:
 - **Visualization**: Seeing abstract concepts in concrete form
 - **Interactive Learning**: Hands-on experimentation with algorithms
 
+
+### In-App Screenshots
+## Main Menu
+![image](https://github.com/user-attachments/assets/6746f153-40e8-4a41-96d4-5b917399e47a)
+## Visualization
+![image](https://github.com/user-attachments/assets/bab85fa1-41cc-4736-967b-04716eb1b5d1)
+## Steps and Complexity Analysis
+![image](https://github.com/user-attachments/assets/725ea691-3b06-448e-9bd8-caf9c6ee6e7e)
+
 ## 🔗 References
 
 - **Red-Black Trees**: Introduction to Algorithms (CLRS)
